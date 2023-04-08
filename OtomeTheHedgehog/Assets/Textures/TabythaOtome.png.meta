@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a09efeb44690c0e4e853592efbbaa29c
+guid: 263e4c26ee8d91e4ba2d07a8c939963c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -102,7 +102,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: WebGL
+    buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -114,7 +114,7 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
-    buildTarget: Android
+    buildTarget: WebGL
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -129,22 +129,43 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 80213_0
+      name: TabythaOtome_0
       rect:
         serializedVersion: 2
-        x: 7
-        y: 874
-        width: 309
-        height: 214
+        x: 0
+        y: 90
+        width: 880
+        height: 990
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 144, y: 99, z: 145, w: 99}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 26097aa5222c6c54c9eae45c345350f2
-      internalID: -489743017
+      spriteID: 3327cb679ec177c44ba58a0027f7ede8
+      internalID: -1887555496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: TabythaOtome_1
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 90
+        width: 880
+        height: 990
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e2c51ca0ed5ef3c468138b3cd405455c
+      internalID: 2058725339
       vertices: []
       indices: 
       edges: []
@@ -160,7 +181,13 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      80213_0: -489743017
+      TabythaOtome_0: -1887555496
+      TabythaOtome_1: 2058725339
+      TabythaOtome_2: 1552444251
+      TabythaOtome_3: 620794815
+      TabythaOtome_4: -1652688711
+      TabythaOtome_5: 923525393
+      TabythaOtome_6: 658579070
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

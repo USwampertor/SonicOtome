@@ -65,3 +65,9 @@ sysinfo.txt
 crashlytics-build.properties
 
 # Commenting just to make tortoise not ignore the file
+UserSettings
+Library
+Logs
+obj
+Packages
+ProjectSettings
