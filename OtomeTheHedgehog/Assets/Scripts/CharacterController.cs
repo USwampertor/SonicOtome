@@ -24,29 +24,36 @@ public class SerializableSprite
   [SerializeField]
   public Sprite sprite = null;
 
-  [SerializeField]
-  public int x;
-  [SerializeField]
-  public int y;
-  [SerializeField]
-  public byte[] bytes;
+  public SerializableSprite(JSON json)
+  {
+    FromJSON(json);
+  }
+
+  public SerializableSprite() 
+  { 
+  
+  }
 
   public JSON ToJSON()
   {
     JSON json = new JSON();
-    json.Add("x", x);
-    json.Add("y", y);
-    json.Add("data", bytes);
+    json.Add("x", sprite ? sprite.texture.width : 0);
+    json.Add("y", sprite ? sprite.texture.height : 0);
+    if (sprite != null)
+    {
+      json.Add("data", ImageConversion.EncodeToPNG(sprite.texture));
+    }
     return json;
   }
 
   public void FromJSON(JSON data)
   {
-    x = data.GetInt("x");
-    y = data.GetInt("y");
-    bytes = data.GetJArray("x").AsByteArray();
+    int x = data.GetInt("x");
+    int y = data.GetInt("y");
+    byte[] bytes = data.GetJArray("data").AsByteArray();
     Texture2D texture = new Texture2D(x, y);
-    
+    ImageConversion.LoadImage(texture, bytes);
+    sprite = Sprite.Create(texture, new Rect(0, 0, x, y), Vector2.one);
   }
 
 }
@@ -57,8 +64,9 @@ public class CharacterData
   public CharacterData(string newName, string newDescription = "")
   {
     name = newName;
-    profile = null;
-    emotions = new Dictionary<eMOOD, List<SerializableSprite>>();
+    profile = new SerializableSprite();
+    emotions = new List<Tuple<eMOOD, SerializableSprite>>();
+    FillDictionary();
   }
 
   public CharacterData(JSON data)
@@ -66,24 +74,41 @@ public class CharacterData
     FromJSON(data);
   }
 
+  public void FillDictionary()
+  {
+    if (null == emotions)
+    {
+      Debug.LogWarning("The emotions list is not initialized. Did you load incorrectly?");
+      return;
+    }
+
+    foreach(var mood in (eMOOD[]) Enum.GetValues(typeof(eMOOD)))
+    {
+      if (null == emotions.Find(x => x.Item1 == mood))
+      {
+        emotions.Add(new Tuple<eMOOD, SerializableSprite>(mood, new SerializableSprite()));
+      }
+    }
+  }
 
   public JSON ToJSON()
   {
     JSON toJSON = new JSON();
 
     toJSON.Add("name", name);
-    toJSON.Add("profile", profile.sprite.texture.GetRawTextureData());
+    toJSON.Add("profile", profile.ToJSON());
     toJSON.Add("emotions", new JSON());
     if (emotions != null)
     {
       foreach (var emotion in emotions)
       {
-        List<byte[]> spritebytes = new List<byte[]>();
-        foreach(var sprite in emotion.Value)
-        {
-          spritebytes.Add(sprite.sprite.texture.GetRawTextureData());
-        }
-        toJSON.GetJSON("emotions").Add(emotion.Key.ToString(), spritebytes.ToArray());
+        JArray spriteArray = new JArray();
+        
+        // foreach(var sprite in emotion.Item2)
+        // {
+        //   spriteArray.Add(sprite.ToJSON());
+        // }
+        toJSON.GetJSON("emotions").Add(emotion.ToString(), emotion.Item2.ToJSON());
       }
     }
 
@@ -93,33 +118,36 @@ public class CharacterData
 
   public void FromJSON(JSON data)
   {
-    // name = data.GetString("name");
-    // Texture2D t = new Texture2D(0, 0);
-    // t.LoadRawTextureData();
-    // profile.texture.LoadRawTextureData(data.GetJArray("profile").AsByteArray());
-    // emotions = new Dictionary<eMOOD, List<Sprite>>();
-    // 
-    // var emotionsJSON = data.GetJSON("emotions");
-    // 
-    // foreach(var emotion in emotionsJSON.Keys)
-    // {
-    //   var arr = emotionsJSON.GetJArray(emotion);
-    // 
-    //   foreach(var bytearray in arr.Values)
-    //   {
-    //     emotions.Add((eMOOD)Enum.Parse(typeof(eMOOD), emotion), );
-    //   }
-    // 
-    // }
+    name = data.GetString("name");
+    profile = new SerializableSprite();
+    profile.FromJSON(data.GetJSON("profile"));
 
+    emotions = new List<Tuple<eMOOD, SerializableSprite>>();
+
+    foreach(var emotionJSON in data.GetJSON("emotions").Keys)
+    {
+      eMOOD emotionEnum = (eMOOD)Enum.Parse(typeof(eMOOD), emotionJSON);
+      List<SerializableSprite> sprites = new List<SerializableSprite>();
+
+      JSON currentEmotion = data.GetJSON("emotions").GetJSON(emotionJSON);
+
+      // foreach(var spriteData in currentEmotion.Values)
+      // {
+      //   SerializableSprite sprite = new SerializableSprite();
+      //   sprite.FromJSON(((JSON)spriteData));
+      //   sprites.Add(sprite);
+      // }
+
+      emotions.Add(new Tuple<eMOOD, SerializableSprite>(emotionEnum, new SerializableSprite(currentEmotion)));
+    }  
   }
 
   [SerializeField]
   public string name;
   [SerializeField]
-  public SerializableSprite profile;
+  public SerializableSprite profile = null;
   [SerializeField]
-  public Dictionary<eMOOD, List<SerializableSprite>> emotions;
+  public List<Tuple<eMOOD, SerializableSprite>> emotions;
 }
 
 public class CharacterController : MonoBehaviour
